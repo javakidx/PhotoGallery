@@ -1,12 +1,17 @@
 package com.bignerdranch.android.photogallery;
 
+import android.app.Activity;
 import android.graphics.Bitmap;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
+import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
@@ -14,6 +19,7 @@ import android.widget.GridView;
 import android.widget.ImageView;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -26,6 +32,7 @@ public class PhotoGalleryFragment extends Fragment
     private GridView mGridView;
     private List<GalleryItem> mItems;
     private ThumbnailDownloader<ImageView> mThumbnailThread;
+
     @Override
     public void onCreate(Bundle savedInstanceState)
     {
@@ -33,7 +40,11 @@ public class PhotoGalleryFragment extends Fragment
 
         setRetainInstance(true);
 
-        new FetchItemsTask().execute();
+        //加search menu item
+        setHasOptionsMenu(true);
+
+//        new FetchItemsTask().execute();
+        updateItems();
 
         //mThumbnailThread = new ThumbnailDownloader<>();
         mThumbnailThread = new ThumbnailDownloader<ImageView>(new Handler());
@@ -53,6 +64,11 @@ public class PhotoGalleryFragment extends Fragment
         mThumbnailThread.start();
         mThumbnailThread.getLooper();
         Log.i(TAG, "Background thread started");
+    }
+
+    public void updateItems()
+    {
+        new FetchItemsTask().execute();
     }
 
     @Override
@@ -75,7 +91,16 @@ public class PhotoGalleryFragment extends Fragment
 //        protected Void doInBackground(Void... params)
         protected List<GalleryItem> doInBackground(Void... params)
         {
-            String query = "android"; //for testing
+//            String query = "android"; //for testing
+            Activity activity = getActivity();
+
+            if(activity == null)
+            {
+                return new ArrayList<>();
+            }
+
+            String query = PreferenceManager.getDefaultSharedPreferences(activity)
+                            .getString(FlickrFetchr.PREF_SEARCH_QUERY, null);
 
             if(query != null)
             {
@@ -152,5 +177,34 @@ public class PhotoGalleryFragment extends Fragment
     {
         super.onDestroyView();
         mThumbnailThread.clearQueue();
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
+    {
+        super.onCreateOptionsMenu(menu, inflater);
+        inflater.inflate(R.menu.fragment_photo_gallery, menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item)
+    {
+        switch (item.getItemId())
+        {
+            case R.id.menu_item_search:
+                getActivity().onSearchRequested();
+                return true;
+
+            case R.id.menu_item_clear:
+                PreferenceManager.getDefaultSharedPreferences(getActivity())
+                        .edit()
+                        .putString(FlickrFetchr.PREF_SEARCH_QUERY, null)
+                        .commit();
+                updateItems();
+                return true;
+
+            default:
+                return super.onOptionsItemSelected(item);
+        }
     }
 }

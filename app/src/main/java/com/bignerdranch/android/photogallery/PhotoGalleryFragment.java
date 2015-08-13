@@ -1,7 +1,9 @@
 package com.bignerdranch.android.photogallery;
 
+import android.graphics.Bitmap;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -33,7 +35,21 @@ public class PhotoGalleryFragment extends Fragment
 
         new FetchItemsTask().execute();
 
-        mThumbnailThread = new ThumbnailDownloader<>();
+        //mThumbnailThread = new ThumbnailDownloader<>();
+        mThumbnailThread = new ThumbnailDownloader<ImageView>(new Handler());
+
+        mThumbnailThread.setListener(new ThumbnailDownloader.Listener<ImageView>()
+        {
+            @Override
+            public void onThumbnailDownloaded(ImageView imageView, Bitmap bitmap)
+            {
+                if(isVisible())
+                {
+                    imageView.setImageBitmap(bitmap);
+                }
+            }
+        });
+
         mThumbnailThread.start();
         mThumbnailThread.getLooper();
         Log.i(TAG, "Background thread started");
@@ -133,5 +149,12 @@ public class PhotoGalleryFragment extends Fragment
         mThumbnailThread.quit();
 
         Log.i(TAG, "Background thread destroyed");
+    }
+
+    @Override
+    public void onDestroyView()
+    {
+        super.onDestroyView();
+        mThumbnailThread.clearQueue();
     }
 }

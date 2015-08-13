@@ -75,16 +75,12 @@ public class PhotoGalleryFragment extends Fragment
 //        protected Void doInBackground(Void... params)
         protected List<GalleryItem> doInBackground(Void... params)
         {
-//            try
-//            {
-//                String result = new FlickrFetchr().getUrl("http://www.google.com");
-//                Log.i(TAG, "Fetched contents of URL: " + result);
-//            }
-//            catch (IOException ioe)
-//            {
-//                Log.e(TAG, "Failed to fetch URL: ", ioe);
-//            }
-//            new FlickrFetchr().fetchItems();
+            String query = "android"; //for testing
+
+            if(query != null)
+            {
+                return new FlickrFetchr().seach(query);
+            }
             return new FlickrFetchr().fetchItems();
 //            return null;
         }

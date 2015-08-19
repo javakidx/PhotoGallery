@@ -1,12 +1,18 @@
 package com.bignerdranch.android.photogallery;
 
 import android.app.Activity;
+import android.app.SearchManager;
+import android.app.SearchableInfo;
+import android.content.ComponentName;
+import android.content.Context;
 import android.graphics.Bitmap;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
+
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -17,8 +23,8 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.GridView;
 import android.widget.ImageView;
+import android.widget.SearchView;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -54,7 +60,7 @@ public class PhotoGalleryFragment extends Fragment
             @Override
             public void onThumbnailDownloaded(ImageView imageView, Bitmap bitmap)
             {
-                if(isVisible())
+                if (isVisible())
                 {
                     imageView.setImageBitmap(bitmap);
                 }
@@ -104,7 +110,7 @@ public class PhotoGalleryFragment extends Fragment
 
             if(query != null)
             {
-                return new FlickrFetchr().seach(query);
+                return new FlickrFetchr().search(query);
             }
             return new FlickrFetchr().fetchItems();
 //            return null;
@@ -184,6 +190,20 @@ public class PhotoGalleryFragment extends Fragment
     {
         super.onCreateOptionsMenu(menu, inflater);
         inflater.inflate(R.menu.fragment_photo_gallery, menu);
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
+            // pull out the SearchView
+            MenuItem searchItem = menu.findItem(R.id.menu_item_search);
+            SearchView searchView = (SearchView)searchItem.getActionView();
+
+            // get the data from our searchable.xml as a SearchableInfo
+            SearchManager searchManager = (SearchManager)getActivity()
+                    .getSystemService(Context.SEARCH_SERVICE);
+            ComponentName name = getActivity().getComponentName();
+            SearchableInfo searchInfo = searchManager.getSearchableInfo(name);
+
+            searchView.setSearchableInfo(searchInfo);
+        }
     }
 
     @Override

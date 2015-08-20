@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">PhotoGallery</string>
+    <string name="action_settings">設定</string>
+    <string name="search">搜尋</string>
+    <string name="clear_search">清除</string>
+    <string name="hello_world">嗨！世界</string>
+    <string name="new_pictures_text">在PhotoGallery中有新照片</string>
+    <string name="new_pictures_title">新PhotoGallery照片</string>
+    <string name="search_hint">搜尋Flickr</string>
+    <string name="start_polling">開始取得新照片</string>
+    <string name="stop_polling">停止取得</string>
+    <string name="title_activity_photo_gallery">PhotoGalleryActivity</string>
+</resources>

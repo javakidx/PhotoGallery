@@ -34,6 +34,8 @@
             <meta-data android:name="android.app.searchable"
                        android:resource="@xml/searchable"/>
         </activity>
+        <activity android:name=".PhotoPageActivity"
+            android:configChanges="keyboardHidden|orientation|screenSize"/>
         <!-- since services respond to intents -->
         <service android:name=".PollService"/>
         <receiver android:name=".StartupReceiver">

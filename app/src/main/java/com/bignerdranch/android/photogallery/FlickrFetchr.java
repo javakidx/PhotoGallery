@@ -108,7 +108,7 @@ public class FlickrFetchr
         return downloadGalleryItems(url);
     }
 
-    void parseItems(ArrayList<GalleryItem> items, XmlPullParser parser) throws XmlPullParserException, IOException {
+    public void parseItems(ArrayList<GalleryItem> items, XmlPullParser parser) throws XmlPullParserException, IOException {
         int eventType = parser.next();
 
         while (eventType != XmlPullParser.END_DOCUMENT) {
@@ -117,11 +117,13 @@ public class FlickrFetchr
                 String id = parser.getAttributeValue(null, "id");
                 String caption = parser.getAttributeValue(null, "title");
                 String smallUrl = parser.getAttributeValue(null, EXTRA_SMALL_URL);
+                String owner = parser.getAttributeValue(null, "owner");
 
                 GalleryItem item = new GalleryItem();
                 item.setId(id);
                 item.setCaption(caption);
                 item.setUrl(smallUrl);
+                item.setOwner(owner);
                 items.add(item);
             }
 

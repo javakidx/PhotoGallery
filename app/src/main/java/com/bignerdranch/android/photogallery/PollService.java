@@ -32,20 +32,37 @@ public class PollService extends IntentService
 
     public static final String PERM_PRIVATE = "com.bignerdranch.android.photogallery.PRIVATE";
 
+    public static Intent newIntent(Context context)
+    {
+        return new Intent(context, PollService.class);
+    }
+
     public PollService()
     {
         super(TAG);
     }
 
+    private boolean isNetworkAvailableAndConnected()
+    {
+        ConnectivityManager cm = (ConnectivityManager)getSystemService(CONNECTIVITY_SERVICE);
+
+        boolean isNetworkAvailable = cm.getActiveNetworkInfo() != null;
+
+        boolean isNetworkConnected = isNetworkAvailable && cm.getActiveNetworkInfo().isConnected();
+
+        return isNetworkConnected;
+    }
+
     @Override
     protected void onHandleIntent(Intent intent)
     {
-        ConnectivityManager cm = (ConnectivityManager)getSystemService(Context.CONNECTIVITY_SERVICE);
-
-        @SuppressWarnings("deprecation")
-        boolean isNetworkAvailable = cm.getBackgroundDataSetting() && cm.getActiveNetworkInfo() != null;
-
-        if (!isNetworkAvailable)
+//        ConnectivityManager cm = (ConnectivityManager)getSystemService(Context.CONNECTIVITY_SERVICE);
+//
+//        @SuppressWarnings("deprecation")
+//        boolean isNetworkAvailable = cm.getBackgroundDataSetting() && cm.getActiveNetworkInfo() != null;
+//
+//        if (!isNetworkAvailable)
+        if (!isNetworkAvailableAndConnected())
         {
             return;
         }
@@ -108,7 +125,8 @@ public class PollService extends IntentService
 
     public static void setServiceAlarm(Context context, boolean isOn)
     {
-        Intent i = new Intent(context, PollService.class);
+        //Intent i = new Intent(context, PollService.class);
+        Intent i = newIntent(context);
         PendingIntent pi = PendingIntent.getService(context, 0, i, 0);
 
         AlarmManager alarmManager = (AlarmManager)context.getSystemService(Context.ALARM_SERVICE);

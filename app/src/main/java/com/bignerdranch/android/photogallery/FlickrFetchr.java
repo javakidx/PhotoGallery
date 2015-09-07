@@ -31,7 +31,7 @@ public class FlickrFetchr
     public static final String PREF_LAST_RESULT_ID = "lastResultId";
 
     private static final String ENDPOINT = "https://api.flickr.com/services/rest/";
-    private static final String API_KEY = "";
+    private static final String API_KEY = "13e1a5b86c026badb9976f1f30674446";
     private static final String METHOD_GET_RECENT = "flickr.photos.getRecent";
     private static final String METHOD_SEARCH = "flickr.photos.search";
     private static final String PARAM_EXTRAS = "extras";

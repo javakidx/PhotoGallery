@@ -13,6 +13,7 @@ import android.content.res.Resources;
 import android.net.ConnectivityManager;
 import android.preference.PreferenceManager;
 import android.support.v4.app.NotificationCompat;
+import android.support.v4.app.NotificationManagerCompat;
 import android.util.Log;
 
 import java.util.List;
@@ -95,7 +96,7 @@ public class PollService extends IntentService
             //按通知啟動APP
             Resources resources = getResources();
 
-            PendingIntent pi = PendingIntent.getService(this, 0, new Intent(this, PhotoGalleryActivity.class), 0);
+            PendingIntent pi = PendingIntent.getActivity(this, 0, PhotoGalleryActivity.newIntent(this), 0);
 
             Notification notification = new NotificationCompat.Builder(this)
                     .setTicker(resources.getString(R.string.new_pictures_title))
@@ -106,12 +107,14 @@ public class PollService extends IntentService
                     .setAutoCancel(true)
                     .build();
 
+            NotificationManagerCompat notificationManager = NotificationManagerCompat.from(this);
+            notificationManager.notify(0, notification);
 //            NotificationManager notificationManager = (NotificationManager)getSystemService(NOTIFICATION_SERVICE);
 //            notificationManager.notify(0, notification);
 
             //sendBroadcast(new Intent(ACTION_SHOW_NOTIFICATION));
 //            sendBroadcast(new Intent(ACTION_SHOW_NOTIFICATION), PERM_PRIVATE);
-            showBackgroundNotification(0, notification);
+            //showBackgroundNotification(0, notification);
         }
         else
         {
@@ -149,7 +152,13 @@ public class PollService extends IntentService
 
     public static boolean isServiceAlarmOn(Context context)
     {
-        Intent i = new Intent(context, PollService.class);
+        //Intent i = new Intent(context, PollService.class);
+        Intent i = PollService.newIntent(context);
+
+        /*
+            PendingIntent.FLAG_NO_CREATE says that if the PendingIntent dose not already exist,
+            return null instead of creating it.
+         */
         PendingIntent pi = PendingIntent.getService(context, 0, i, PendingIntent.FLAG_NO_CREATE);
 
         return pi != null;

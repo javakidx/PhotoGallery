@@ -1,6 +1,7 @@
 package com.bignerdranch.android.photogallery;
 
 import android.app.SearchManager;
+import android.content.Context;
 import android.content.Intent;
 import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
@@ -13,6 +14,11 @@ import android.view.MenuItem;
 public class PhotoGalleryActivity extends SingleFragmentActivity
 {
     private static final String TAG = "PhotoGalleryActivity";
+
+    public static Intent newIntent(Context context)
+    {
+        return new Intent(context, PhotoGalleryActivity.class);
+    }
 
     @Override
     protected Fragment createFragment()
